@@ -1,0 +1,203 @@
+1. /ip
+
+Запрос:
+open httpbin.org 80
+
+GET /ip HTTP/1.1     //запрос на доступ к существующему ресурсу
+Host: httpbin.org    //адрес сервера
+Accept: */*          //запрос ip-адреса
+
+Ответ сайта:
+HTTP/1.1 200 OK               //запрос выполнен успешно
+Connection: keep-alive        //поддерживается постоянное соединение
+Server: gunicorn/19.9.0       //информация о сервере
+Date: Fri, 28 Sep 2018 19:56:08 GMT   //дата ответа
+Content-Type: application/json        //тип содержимого
+Content-Length: 31                    //длина содержимого
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Via: 1.1 vegur
+
+{
+   "origin": "128.75.127.126"
+                           }
+                           
+//200 OK - запрос выполнен успешно. Получаем ip адрес. Соединение постоянное.
+Из ответа сайта мы можем найти информацию о статусе соединения, информации о сервере, дате,
+типе и длине содержимого, параметре доступа и др.
+_________________________
+2. /get
+
+Запрос:
+open httpbin.org 80
+
+GET /get?foo=bar&1=2&2/0&error=True HTTP/1.1
+Host: httpbin.org
+Accept: */*
+
+Ответ сайта:
+HTTP/1.1 200 OK                         //запрос выполнен успешно
+Connection: keep-alive                  //поддерживается постоянное соединение
+Server: gunicorn/19.9.0                 //информация о сервере
+Date: Fri, 28 Sep 2018 20:02:59 GMT     //дата ответа
+Content-Type: application/json          //тип содержимого
+Content-Length: 281                     //длина содержимого
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Via: 1.1 vegur
+
+{
+   "args": {
+             "1": "2",
+             "2/0": "",
+             "error": "True",
+             "foo": "bar"
+            },
+   "headers": {
+              "Accept": "*/*",
+              "Connection": "close",
+              "Host": "httpbin.org"
+            },
+   "origin": "128.75.127.126",
+   "url": "http://httpbin.org/get?foo=bar&1=2&2%2F0&error=True"
+}
+
+//200 OK - запрос выполнен успешно. Получаем ip-адрес и url. Соединение постоянное.
+Из ответа сайта мы можем найти информацию о статусе соединения, информации о сервере, дате,
+типе и длине содержимого, параметре доступа и др.
+_________________________
+3. /post
+open httpbin.org 80
+
+Запрос:
+POST /post HTTP/1.1                    //отправляем форму, в конце запроса перечисляются аргументы
+Host: httpbin.org
+Accept: */*
+Content-Length: 35
+Content-Type: application/x-www-form-urlencoded
+
+foo=bar&1=2&2%2F0=&error=True
+
+Ответ сайта:
+HTTP/1.1 200 OK                         //запрос выполнен успешно
+Connection: keep-alive                  //поддерживается постоянное соединение
+Server: meinheld/0.6.1                  //информация о сервере
+Date: Fri, 28 Sep 2018 20:14:04 GMT     //дата ответа
+Content-Type: application/json          //тип содержимого
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+X-Powered-By: Flask
+X-Processed-Time: 0.000952959060669
+Content-Length: 416                     //длина содержимого
+Via: 1.1 vegur
+
+{
+  "args": {}, 
+  "data": "", 
+  "files": {}, 
+  "form": {
+    "1": "2", 
+    "2/0": "", 
+    "error": "True\r\n\r\n\r\n", 
+    "foo": "bar"
+  }, 
+  "headers": {
+    "Accept": "*/*", 
+    "Connection": "close", 
+    "Content-Length": "35", 
+    "Content-Type": "application/x-www-form-urlencoded", 
+    "Host": "httpbin.org"
+  }, 
+  "json": null, 
+  "origin": "128.75.127.126", 
+  "url": "http://httpbin.org/post"
+}
+
+//200 OK - запрос выполнен успешно. Соединение постоянное. Параметры были переданы с помощью запроса POST.
+Из ответа сайта мы можем найти информацию о статусе соединения, информации о сервере, дате,
+типе и длине содержимого, параметре доступа и др.
+________________________
+4. /cookies/set
+open httpbin.org 80
+
+Запрос:
+GET /cookies/set?country=Ru HTTP/1.1
+Host: httpbin.org
+Accept: */*
+
+Ответ сайта:
+HTTP/1.1 302 FOUND                      //запрошенный ресурс был временно перемещен в URL-адрес, указанный в Location
+Connection: keep-alive                  //поддерживается постоянное соединение
+Server: gunicorn/19.9.0                 //информация о сервере
+Date: Fri, 28 Sep 2018 20:44:06 GMT     //дата ответа
+Content-Type: text/html; charset=utf-8  //тип содержимого
+Content-Length: 223                     //длина содержимого
+Location: /cookies
+Set-Cookie: country=Ru; Path=/
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Via: 1.1 vegur
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>Redirecting...</title>
+<p>You should be redirected automatically to target URL: <a href="/cookies">/cookies</a>.  If not click the link.
+
+//302 FOUND - запрошенный ресурс был временно перемещен в URL-адрес, указанный в Location.
+Из ответа сайта мы можем найти информацию о статусе соединения, информации о сервере, дате,
+типе и длине содержимого, параметре доступа и др. 
+________________________
+5. /cookies
+open httpbin.org 80
+
+Запрос:
+GET /cookies HTTP/1.1
+Host: httpbin.org
+Accept: */*
+
+Ответ сайта:
+HTTP/1.1 200 OK                         //запрос выполнен успешно
+Connection: keep-alive                  //поддерживается постоянное соединение
+Server: gunicorn/19.9.0                 //информация о сервере
+Date: Fri, 28 Sep 2018 21:05:23 GMT     //дата ответа
+Content-Type: application/json          //тип содержимого
+Content-Length: 20                      //длина содержимого
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Via: 1.1 vegur
+
+{
+   "cookies": {}
+                }
+
+//200 OK - запрос выполнен успешно. Соединение постоянное. Запрос на получение cookies.
+В ответ мы получили пустое значение cookies.
+Из ответа сайта мы можем найти информацию о статусе соединения, информации о сервере, дате,
+типе и длине содержимого, параметре доступа и др.
+________________________
+6. /redirect
+open httpbin.org 80
+
+Запрос:
+GET /redirect/4 HTTP/1.1
+Host: httpbin.org
+Accept: */*
+
+Ответ сайта:
+HTTP/1.1 302 FOUND                      //запрошенный ресурс был временно перемещен в URL-адрес, указанный в Location
+Connection: keep-alive                  //поддерживается постоянное соединение
+Server: gunicorn/19.9.0                 //информация о сервере
+Date: Fri, 28 Sep 2018 21:32:49 GMT     //дата ответа
+Content-Type: text/html; charset=utf-8  //тип содержимого
+Content-Length: 247                     //длина содержимого
+Location: /relative-redirect/3
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Via: 1.1 vegur
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to target URL: <a href="/relative-redirect/3">/relative-redirect/3</a>.  If not click the link.
+
+//Код ответа 302 - запрошенный документ временно доступен по другому URI. Location: /relative-redirect/3 - новый адрес (URI по которому клиенту следует перейти).
+В ответе присутствует часть html кода страницы.
